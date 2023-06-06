@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('note')->nullable();
             $table->integer('km')->nullable()->comment("Kilometre");
             $table->text('registration')->nullable();
+            $table->text('address')->nullable(); // Quartier-ville du véhicule
             $table->dateTime('verified_at')->nullable();
             $table->double('percentage_reduction')->nullable();
             $table->boolean('is_manuel')->default(false)->comment("Etat du compte");

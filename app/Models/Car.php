@@ -23,4 +23,26 @@ class Car extends Model
      * @var array
      */
     protected $dates = ['deleted_at'];
+
+    protected $appends = ['created_date', 'client_price_format', 'km_format'];
+
+    public function scopePublish($query)
+    {
+        return $query->where('cars.state_id', 3);
+    }  
+    
+    public function getCreatedDateAttribute()
+    {
+        return date_diff_for_humans($this->created_at);
+    }
+    
+    public function getClientPriceFormatAttribute()
+    {
+        return format_amount($this->client_price);
+    }
+
+    public function getKmFormatAttribute()
+    {
+        return format_numer($this->km);
+    }
 }
