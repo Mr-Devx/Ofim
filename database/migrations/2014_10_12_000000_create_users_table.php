@@ -23,6 +23,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->boolean('is_active')->default(false)->comment("Etat du compte");
             $table->string('password');
+            $table->string('auth_code')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

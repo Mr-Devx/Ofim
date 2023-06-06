@@ -3,7 +3,8 @@
 use App\Http\Controllers\CarController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\RegisterController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -15,10 +16,29 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+// Route::group(['prefix' => '/v1'], function () {
+//     Route::resource('cars', CarController::class)/**->middleware('auth:sanctum')*/;
+// });
+
+
+$middlewareGroup = ['auth:sanctum'];
+$auth = 'v1/auth/';
+$version = '/v1';
+
+Route::prefix($auth)->group(function () {
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/register', [RegisterController::class, 'store']);
 });
 
-Route::group(['prefix' => '/v1'], function () {
-    Route::resource('cars', CarController::class)/**->middleware('auth:sanctum')*/;
+
+
+Route::middleware($middlewareGroup)->group(function () use ($version) {
+    Route::prefix($version)->group(function () {
+        Route::resource('cars', CarController::class);
+    });
 });
