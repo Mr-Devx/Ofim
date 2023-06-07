@@ -17,16 +17,16 @@ return new class extends Migration
             $table->text('model')->nullable();
             $table->text('year')->nullable();
             $table->text('color')->nullable();
-            $table->text('lat')->nullable();
-            $table->text('long')->nullable();
+            $table->double('lat')->nullable();
+            $table->double('long')->nullable();
             $table->double('day_price')->nullable();
             $table->double('location_price')->nullable();
             $table->double('client_price')->nullable();
-            $table->integer('note')->nullable();
-            $table->integer('km')->nullable()->comment("Kilometre");
+            $table->double('note')->nullable();
+            $table->double('km')->nullable()->comment("Kilometre");
             $table->text('registration')->nullable();
             $table->text('address')->nullable(); // Quartier-ville du véhicule
-            $table->dateTime('verified_at')->nullable();
+            $table->date('verified_at')->nullable();
             $table->double('percentage_reduction')->nullable();
             $table->boolean('is_manuel')->default(false)->comment("Etat du compte");
 

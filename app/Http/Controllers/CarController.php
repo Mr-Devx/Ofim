@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreCarRequest;
 use App\Http\Requests\UpdateCarRequest;
+use App\Http\Requests\ValidationCarRequest;
 
 class CarController extends Controller
 {
@@ -15,12 +16,11 @@ class CarController extends Controller
      */
     public function index(Request $request)
     {
-        $entities = Car::publish();
-        // ->leftJoin('mark_cars', "cars.mark_id", '=', 'mark_cars.id')
-        // ->leftJoin('users', "cars.created_by", '=', 'users.id')
-        // ->leftJoin('category_cars', "cars.category_id", '=', 'category_cars.id')
-        // ->leftJoin('state_cars', "cars.state_id", '=', 'state_cars.id')
-        // ->leftJoin('type_cars', "cars.type_id", '=', 'type_cars.id');
+        $entities = Car::query();
+
+        if(auth()->user()->role_id>3){
+            $entities->publish();
+        }
 
         if($request->mark && $request->mark>0){
             $entities->where('cars.mark_id', $request->mark);
@@ -75,15 +75,45 @@ class CarController extends Controller
      */
     public function store(StoreCarRequest $request)
     {
-        //
+        $entity = new Car([
+            'decription'    => $request->decription,
+            'model'         => $request->model,
+            'year'          => $request->year,
+            'color'         => $request->color,
+            'lat'           => $request->lat,
+            'long'          => $request->long,
+            'day_price'     => $request->day_price,
+            'km'            => $request->km,
+            'registration'  => $request->registration,
+            'address'       => $request->address,
+            'is_manuel'     => $request->is_manuel,
+            'mark_id'       => $request->mark_id,
+            'category_id'   => $request->category_id,
+            'type_id'       => $request->type_id,
+            'state_id'      => 1,
+            'created_by'    => auth()->user()->id
+        ]);
+
+        DB::transaction(function () use ($request, $entity) {
+            $entity->save();
+            // notifier les administrateur et le client de l'ajout d'un nouveau véhicule
+        });
+
+        $entity = $this->show($entity->id);
+
+        return response()->json([
+            'success' => true,
+            'data'    => $entity,
+            'message' => __('auth.success_message')
+        ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($car)
+    public function show($car, )
     {
-        $entities = Car::publish()->leftJoin('mark_cars', "cars.mark_id", '=', 'mark_cars.id')
+        $entities = Car::leftJoin('mark_cars', "cars.mark_id", '=', 'mark_cars.id')
         ->leftJoin('users', "cars.created_by", '=', 'users.id')
         ->leftJoin('category_cars', "cars.category_id", '=', 'category_cars.id')
         ->leftJoin('state_cars', "cars.state_id", '=', 'state_cars.id')
@@ -103,6 +133,7 @@ class CarController extends Controller
             "cars.registration",
             "cars.is_manuel",
             "cars.created_at",
+            "cars.state_id",
             DB::raw('CONCAT(users.firstname, \' \', users.lastname) AS publish_by'),
             "category_cars.name as category_car",
             "state_cars.name as state_car",
@@ -123,9 +154,37 @@ class CarController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCarRequest $request, Car $car)
+    public function update(UpdateCarRequest $request)
     {
-        //
+        $entity = Car::findOrFail($request->car_id);
+
+        DB::transaction(function () use ($request, $entity) {
+            $entity->update([
+                'decription'    => $request->decription,
+                'model'         => $request->model,
+                'year'          => $request->year,
+                'color'         => $request->color,
+                'lat'           => $request->lat,
+                'long'          => $request->long,
+                'day_price'     => $request->day_price,
+                'km'            => $request->km,
+                'registration'  => $request->registration,
+                'address'       => $request->address,
+                'is_manuel'     => $request->is_manuel,
+                'mark_id'       => $request->mark_id,
+                'category_id'   => $request->category_id,
+                'type_id'       => $request->type_id,
+            ]);
+
+            // notifier les administrateur et le client de l'ajout d'un nouveau véhicule
+        });
+
+        $entity = $this->show($entity->id);
+        return response()->json([
+            'success' => true,
+            'data'    => $entity,
+            'message' => __('auth.success_message')
+        ]);
     }
 
     /**
@@ -133,6 +192,96 @@ class CarController extends Controller
      */
     public function destroy(Car $car)
     {
-        //
+        DB::transaction(function () use ($car) {
+            $car->delete();
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => __('auth.success_message')
+        ]);
+    }
+
+    /**
+     * Rejeter l'ajout d'un véhicule sur la plateforme
+     */
+    public function publish(Request $request)
+    {
+        $entity = Car::where('id', $request->car_id)->where('state_id', 3);
+
+        if(auth()->user()->role_id>3){
+            $entity->where('created_by', auth()->user()->id);
+        }
+
+        $entity = $entity->firstOrFail();
+        
+        DB::transaction(function () use ($entity) {
+            $entity->update([
+                'state_id'             => 4
+            ]);
+
+            // notifier le client que son véhicule est rejeter sur la plateforme
+        });
+
+        $entity = $this->show($entity->id);
+
+        return response()->json([
+            'success' => true,
+            'data'    => $entity,
+            'message' => __('auth.success_message')
+        ]);
+    }
+
+    /**
+     * Approuver l'ajout d'un véhicule sur la plateforme
+     * Par un Admin
+     */
+    public function validation(ValidationCarRequest $request)
+    {
+        $entity = Car::where('state_id', 1)->where('id',$request->car_id)->firstOrFail();
+
+        DB::transaction(function () use ($request, $entity) {
+            $entity->update([
+                'client_price'          => $request->location_price + $entity->day_price,
+                'percentage_reduction'  => $request->percentage_reduction,
+                'location_price'        => $request->location_price,
+                'state_id'              => 3
+            ]);
+
+            // notifier le client que son véhicule est disponible sur la plateforme
+        });
+
+        $entity = $this->show($entity->id);
+
+        return response()->json([
+            'success' => true,
+            'data'    => $entity,
+            'message' => __('auth.success_message')
+        ]);
+    }
+
+    /**
+     * Rejeter l'ajout d'un véhicule sur la plateforme
+     * Par un Admin
+     */
+    public function revocation(Request $request)
+    {
+        $entity = Car::where('state_id', 1)->where('id',$request->car_id)->firstOrFail();
+
+        DB::transaction(function () use ($entity) {
+            $entity->update([
+                'state_id'             => 2
+            ]);
+
+            // notifier le client que son véhicule est rejeter sur la plateforme
+        });
+
+        $entity = $this->show($entity->id);
+
+        return response()->json([
+            'success' => true,
+            'data'    => $entity,
+            'message' => __('auth.success_message')
+        ]);
     }
 }

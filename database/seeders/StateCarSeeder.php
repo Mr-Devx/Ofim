@@ -18,10 +18,13 @@ class StateCarSeeder extends Seeder
                 'name'  => "Enregistrer" /* Ajouter mais pas encore approuver */
             ],
             [
+                'name'  => "Rejeter" 
+            ],
+            [
                 'name'  => "Valider" 
             ],
             [
-                'name'  => "Disponible" /* Dispo pour location */
+                'name'  => "Publier" /* Dispo pour location */
             ],
             [
                 'name'  => "Louer" /** Louer a un locataire */

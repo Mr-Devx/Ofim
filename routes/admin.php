@@ -1,10 +1,7 @@
 <?php
 
 use App\Http\Controllers\CarController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Auth\RegisterController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -18,24 +15,12 @@ use App\Http\Controllers\Auth\RegisterController;
 
 
 $middlewareGroup = ['auth:sanctum'];
-$auth = 'v1/auth/';
-$version = '/v1';
-
-Route::prefix($auth)->group(function () {
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/register', [RegisterController::class, 'store']);
-});
+$version = '/v1/admin/';
 
 
 Route::middleware($middlewareGroup)->group(function () use ($version) {
     Route::prefix($version)->group(function () {
-        Route::resource('cars', CarController::class);
-        Route::post('/cars/update', [CarController::class, 'update']);
-        Route::post('/cars/publish', [CarController::class, 'publish']);
+        Route::post('/cars/approve', [CarController::class, 'validation']);
+        Route::post('/cars/revoke', [CarController::class, 'revocation']);
     });
 });
-
-
-
-require __DIR__ . '/admin.php';
