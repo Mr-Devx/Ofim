@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use App\Models\VerificationCode;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
@@ -63,4 +63,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class, 'role_id');
     }
+
+      // Relation avec le modèle VerificationCode
+      public function verificationCode()
+      {
+          return $this->hasOne(VerificationCode::class);
+      }
 }

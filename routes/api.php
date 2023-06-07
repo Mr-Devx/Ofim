@@ -32,6 +32,7 @@ $version = '/v1';
 Route::prefix($auth)->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/verify-code',  [AuthController::class, 'verifyCode']);
     Route::post('/register', [RegisterController::class, 'store']);
 });
 

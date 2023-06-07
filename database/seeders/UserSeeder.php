@@ -26,6 +26,16 @@ class UserSeeder extends Seeder
             ],
             [
                 'firstname'     => "ADMIN",
+                'lastname'      => "Admin",
+                'email'         => "raiis.padaro@gmail.com",
+                'phone'         => '+22890807060',
+                'username'      => 'admin',
+                'password'      => bcrypt('password'),
+                'role_id'       =>1,
+                'is_active'     => true,
+            ],
+            [
+                'firstname'     => "ADMIN",
                 'lastname'      => "Editeur",
                 'email'         => "editeur@maloc.com",
                 'phone'         => '+22890807061',
