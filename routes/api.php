@@ -40,6 +40,10 @@ Route::prefix($auth)->group(function () {
 
 Route::middleware($middlewareGroup)->group(function () use ($version) {
     Route::prefix($version)->group(function () {
-        Route::resource('cars', CarController::class);
+        Route::get('/profile/{id}', [AuthController::class, 'profile']);
+        Route::put('/update-profile/{id}', [AuthController::class, 'update']);
+        Route::delete('/delete-profile/{id}', [AuthController::class, 'delete']);
+        Route::put('/change-password/{id}', [AuthController::class, 'changePassword']);
+
     });
 });

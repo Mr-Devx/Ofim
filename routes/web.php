@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Auth\VerificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +18,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/mailValidate', function () {
+    return view('mailValidate');
+});
+Route::get('/alreadymailValidate', function () {
+    return view('alreadymailValidate');
+});
+
+Route::get('/verify-email', [VerificationController::class, 'verifyEmail'])->name('verification.verify');
+

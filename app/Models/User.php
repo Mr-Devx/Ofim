@@ -11,8 +11,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\VerificationCode;
-class User extends Authenticatable
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+class User extends Authenticatable implements MustVerifyEmail
 {
+    use Notifiable;
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
     use HasRoles;
 
@@ -43,6 +46,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    protected $primaryKey = 'id';
 
     /**
      * The attributes that should be cast.

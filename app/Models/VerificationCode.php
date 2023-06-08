@@ -11,6 +11,7 @@ class VerificationCode extends Model
         'user_id',
         'code',
         'expires_at',
+        'token',
     ];
 
     // Relation avec le modèle User

@@ -45,6 +45,9 @@ class RegisterController extends Controller
         $User->profil = $request->profil;
         $User->password =  bcrypt($request->password);
         $User->save();
+
+        $User->sendEmailVerificationNotification();
+        
         return response()->json(new UserResource($User), 201);
     }
 }
