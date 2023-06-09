@@ -15,13 +15,13 @@ class CategoryCarSeeder extends Seeder
     {
         $roles = [
             [
-                'name'  => "Electrique"
+                'name_fr'  => "Electrique"
             ],
             [
-                'name'  => "A carburant"
+                'name_fr'  => "A carburant"
             ],
             [
-                'name'  => "Hybride"
+                'name_fr'  => "Hybride"
             ],
         ];
 

@@ -33,6 +33,9 @@ Route::middleware($middlewareGroup)->group(function () use ($version) {
         Route::resource('cars', CarController::class);
         Route::post('/cars/update', [CarController::class, 'update']);
         Route::post('/cars/publish', [CarController::class, 'publish']);
+        Route::post('/cars/review', [CarController::class, 'review']);
+        Route::post('/cars/media/add', [CarController::class, 'add_media']);
+        Route::post('/cars/media/delete', [CarController::class, 'delete_media']);
     });
 });
 

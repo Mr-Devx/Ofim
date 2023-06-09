@@ -16,13 +16,13 @@ class PlateformPayementSeeder extends Seeder
         
         $roles = [
             [
-                'name'  => "Carte bancaire"
+                'name_fr'  => "Carte bancaire"
             ],
             [
-                'name'  => "Mobile Monney"
+                'name_fr'  => "Mobile Monney"
             ],
             [
-                'name'  => "Paypal"
+                'name_fr'  => "Paypal"
             ],
         ];
 

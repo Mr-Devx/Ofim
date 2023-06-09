@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('mark_cars', function (Blueprint $table) {
             $table->id();
-            $table->text('name')->nullable();
             
+            $table->text('name')->nullable();
+
             $table->timestamps();
             $table->softDeletes();
         });

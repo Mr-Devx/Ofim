@@ -25,7 +25,7 @@ class UpdateCarRequest extends FormRequest
     {
         return [
             'car_id'               => ['required' ,'integer', 'exists:cars,id'],
-            'decription'            => ['required', 'string'],
+            'description'            => ['required', 'string'],
             'model'                 => ['required', 'string'],
             'year'                  => ['required', 'string'],
             'color'                 => ['required', 'string'],
