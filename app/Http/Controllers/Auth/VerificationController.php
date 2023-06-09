@@ -14,10 +14,10 @@ class VerificationController extends Controller
         $user = User::find($request->id);
 
         if ($user->email_verified_at == null) {
-            return redirect('/mailValidate')->with('success', 'Votre adresse email a été vérifiée.');
-        } else {
             $user->email_verified_at = now();
             $user->update();
+            return redirect('/mailValidate')->with('success', 'Votre adresse email a été vérifiée.');
+        } else {
             return redirect('/alreadymailValidate')->with('success', 'Votre adresse email a été vérifiée.');
         }
     }
