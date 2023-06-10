@@ -24,12 +24,17 @@ class Car extends Model
      */
     protected $dates = ['deleted_at'];
 
-    protected $appends = ['created_date', 'client_price_format', 'km_format'];
+    protected $appends = ['created_date', 'client_price_format', 'km_format', 'cover'];
 
     public function scopePublish($query)
     {
-        return $query->where('cars.state_id', 3);
+        return $query->where('cars.state_id', 4);
     }  
+
+    public function scopeReview($query)
+    {
+        return $query->where('cars.state_id', 3);
+    } 
     
     public function getCreatedDateAttribute()
     {
@@ -44,5 +49,11 @@ class Car extends Model
     public function getKmFormatAttribute()
     {
         return format_numer($this->km);
+    }
+
+    public function getCoverAttribute()
+    {
+        $images = ImageCar::where('car_id', $this->id)->first();
+        return $images->path ?? '--';
     }
 }

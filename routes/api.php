@@ -18,14 +18,6 @@ use App\Http\Controllers\ResetPasswordController;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-// Route::group(['prefix' => '/v1'], function () {
-//     Route::resource('cars', CarController::class)/**->middleware('auth:sanctum')*/;
-// });
-
 
 $middlewareGroup = ['auth:sanctum'];
 $auth = 'v1/auth/';
@@ -42,14 +34,25 @@ Route::prefix($auth)->group(function () {
 });
 
 
-
 Route::middleware($middlewareGroup)->group(function () use ($version) {
     Route::prefix($version)->group(function () {
         Route::get('/profile/{id}', [AuthController::class, 'profile']);
         Route::put('/update-profile/{id}', [AuthController::class, 'update']);
         Route::delete('/delete-profile/{id}', [AuthController::class, 'delete']);
         Route::put('/change-password/{id}', [AuthController::class, 'changePassword']);
+
+        Route::resource('cars', CarController::class);
+        Route::post('/cars/update', [CarController::class, 'update']);
+        Route::post('/cars/publish', [CarController::class, 'publish']);
+        Route::post('/cars/review', [CarController::class, 'review']);
+        Route::post('/cars/media/add', [CarController::class, 'add_media']);
+        Route::post('/cars/media/delete', [CarController::class, 'delete_media']);
     });
 });
 
 Route::post('password/reset', ['as' => 'password.reset','uses' => 'ResetPasswordController@reset']);
+       
+
+
+
+require __DIR__ . '/admin.php';

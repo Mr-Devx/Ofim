@@ -15,10 +15,10 @@ class TypeCarSeeder extends Seeder
     {
         $roles = [
             [
-                'name'  => "Berling"
+                'name_fr'  => "Berling"
             ],
             [
-                'name'  => "4x4"
+                'name_fr'  => "4x4"
             ],
         ];
 

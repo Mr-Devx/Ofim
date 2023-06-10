@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('plateform_payements', function (Blueprint $table) {
             $table->id();
-            $table->text('name')->nullable();
+
+            $table->text('name_fr')->nullable();
+            $table->text('name_en')->nullable();
             
             $table->timestamps();
             $table->softDeletes();

@@ -15,16 +15,22 @@ class StateCarSeeder extends Seeder
     {
         $roles = [
             [
-                'name'  => "Enregistrer" /* Ajouter mais pas encore approuver */
+                'name_fr'  => "Enregistrer" /* Ajouter mais pas encore approuver */
             ],
             [
-                'name'  => "Valider" 
+                'name_fr'  => "Rejeter" 
             ],
             [
-                'name'  => "Disponible" /* Dispo pour location */
+                'name_fr'  => "Brouillon" /* Not dispo pour location */
             ],
             [
-                'name'  => "Louer" /** Louer a un locataire */
+                'name_fr'  => "Valider" 
+            ],
+            [
+                'name_fr'  => "Publier" /* Dispo pour location */
+            ],
+            [
+                'name_fr'  => "Louer" /** Louer a un locataire */
             ],
         ];
 

@@ -15,6 +15,16 @@ class UserSeeder extends Seeder
     {
         $entities = [
             [
+                'firstname'     => "AGBOKA",
+                'lastname'      => "Fabrice",
+                'email'         => "fabrice@gmail.com",
+                'phone'         => '+22890807060',
+                'username'      => 'fabrice',
+                'password'      => bcrypt('password'),
+                'role_id'       =>1,
+                'is_active'     => true,
+            ],
+            [
                 'firstname'     => "ADMIN",
                 'lastname'      => "Admin",
                 'email'         => "admin@maloc.com",
