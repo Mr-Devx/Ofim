@@ -21,7 +21,6 @@ return new class extends Migration
             $table->foreignId('payement_id')->nullable()->constrained('payements');
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->foreignId('car_id')->nullable()->constrained('cars');
-
             $table->timestamps();
             $table->softDeletes();
         });

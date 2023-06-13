@@ -7,6 +7,8 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\CurentTenantController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -40,6 +42,17 @@ Route::middleware($middlewareGroup)->group(function () use ($version) {
         Route::put('/update-profile/{id}', [AuthController::class, 'update']);
         Route::delete('/delete-profile/{id}', [AuthController::class, 'delete']);
         Route::put('/change-password/{id}', [AuthController::class, 'changePassword']);
+
+        Route::post('/reserve-cars', [CurentTenantController::class, 'store']);
+        Route::put('/update-reservation/{id}', [CurentTenantController::class, 'update']);
+        Route::put('/note-reservation/{id}', [CurentTenantController::class, 'note']);
+        Route::put('/extend-reservation/{id}', [CurentTenantController::class, 'extend']);
+        Route::get('/cancel-reservation/{id}', [CurentTenantController::class, 'cancel']);
+        Route::get('/valid-reservation/{id}', [CurentTenantController::class, 'valid']);
+
+
+
+        Route::get('/reservations', [CurentTenantController::class, 'index']);
 
         Route::resource('cars', CarController::class);
         Route::post('/cars/update', [CarController::class, 'update']);

@@ -19,7 +19,6 @@ return new class extends Migration
             $table->double('amount')->nullable();
             $table->boolean('state')->default(false)->comment("Etat du paiement");
             $table->dateTime('date_payement')->nullable();
-
             $table->timestamps();
             $table->softDeletes();
         });
