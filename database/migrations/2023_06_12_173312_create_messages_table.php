@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->foreign('sender')->nullable()->references('id')->on('users');
-            $table->foreign('receiver')->nullable()->references('id')->on('users');
-            $table->foreign('curent_tenant_id')->nullable()->references('id')->on('curent_tenants');
+            $table->foreignId('sender')->nullable()->constrained('users')->comment("Celui qui envoie le message");
+            $table->foreignId('receiver')->nullable()->constrained('users')->comment("Celui qui recois le message");
+            $table->foreignId('curent_tenant_id')->nullable()->constrained('curent_tenants')->comment("La reservation associé a la discussion");
             $table->text('message')->nullable();
             $table->timestamps();
         });
