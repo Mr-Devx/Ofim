@@ -35,6 +35,10 @@ class DatabaseSeeder extends Seeder
             /** data */
             UserSeeder::class,
             CarSeeder::class,
+            DriverSeeder::class,
+
+            // params system
+            ParametersSeeder::class,
         ]);
     }
 }

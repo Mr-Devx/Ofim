@@ -8,6 +8,12 @@
         return $date->diffForHumans();
     }
 
+    /**Formater la date en format jour mois année */
+    function format_date($date){
+        $date = Carbon::parse($date)->locale(config('app.locale') ?? 'fr');
+        return $date->isoFormat('D MMM YYYY');
+    }
+
     /**Formater le amount en 20,000,000.20 */
     function format_amount($amount){
         return number_format($amount, 2, '.', ',');

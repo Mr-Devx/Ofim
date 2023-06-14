@@ -10,6 +10,8 @@ use App\Http\Requests\StoreCarRequest;
 use App\Http\Requests\UpdateCarRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\ValidationCarRequest;
+use App\Models\CarDriver;
+use App\Models\Driver;
 
 class CarController extends Controller
 {
@@ -99,6 +101,7 @@ class CarController extends Controller
         DB::transaction(function () use ($request, $entity) {
             $entity->save();
 
+            // ajout des images
             foreach($request->medias as $media){
                 $fileName = env('APP_NAME_MEDIA') .'-'. date('Y-m-d-à-H-i-s') . '.' . $media->getClientOriginalExtension();
                 Storage::putFileAs("/cars", $media, $fileName);
@@ -107,6 +110,17 @@ class CarController extends Controller
                     'path' => '/storage/cars/'. $fileName,
                     'car_id'  => $entity->id
                 ]);
+            }
+
+            // ajout des chauffeur disponible pour le véhicule
+            foreach($request->drivers as $driver){
+                $driver =Driver::where('owner_id', auth()->user()->id)->where('id', $driver)->first();
+                if($driver){
+                    CarDriver::create([
+                        'car_id'    => $entity->id,
+                        'driver_id' => $driver->id
+                    ]);
+                }
             }
             // notifier les administrateur et le client de l'ajout d'un nouveau véhicule
         });
@@ -155,9 +169,21 @@ class CarController extends Controller
 
         $images = ImageCar::where('car_id', $car)->select('path', 'id')->get();
 
+        $drivers = CarDriver::leftJoin('drivers', "drivers.id", '=', 'car_drivers.driver_id');
+        $drivers->where('car_drivers.car_id', $car);
+        $drivers->whereNull('car_drivers.deleted_at');
+        $drivers->whereNull('drivers.deleted_at');
+        $drivers->select(
+            'drivers.fullname as driver_fullname',
+            'drivers.note as driver_note',
+            'drivers.phone as driver_phone',
+            'car_drivers.id as id',
+        );
+
         return [
-            'car'    => $entities->firstOrFail(),
-            'images' => $images
+            'car'       => $entities->firstOrFail(),
+            'images'    => $images,
+            'drivers'   => $drivers->get()
         ];
     }
 
@@ -194,6 +220,7 @@ class CarController extends Controller
                 'type_id'       => $request->type_id,
             ]);
 
+            // ajout des images
             foreach($request->medias as $media){
                 $fileName = env('APP_NAME_MEDIA') .'-'. date('Y-m-d-à-H-i-s') . '.' . $media->getClientOriginalExtension();
                 Storage::putFileAs("/cars", $request->file('file'), $fileName);
@@ -202,6 +229,17 @@ class CarController extends Controller
                     'path' => '/storage/cars/'. $fileName,
                     'car_id'  => $entity->id
                 ]);
+            }
+
+            // ajout des chauffeur disponible pour le véhicule
+            foreach($request->drivers as $driver){
+                $driver =Driver::where('owner_id', auth()->user()->id)->where('id', $driver)->first();
+                if($driver){
+                    CarDriver::create([
+                        'car_id'    => $entity->id,
+                        'driver_id' => $driver->id
+                    ]);
+                }
             }
 
             // notifier les administrateur et le client de l'ajout d'un nouveau véhicule
@@ -263,6 +301,21 @@ class CarController extends Controller
     {
         DB::transaction(function () use ($request) {
             ImageCar::where('id', $request->media)->delete();
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => __('auth.success_message')
+        ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function delete_driver(Request $request)
+    {
+        DB::transaction(function () use ($request) {
+            CarDriver::where('id', $request->driver)->delete();
         });
 
         return response()->json([

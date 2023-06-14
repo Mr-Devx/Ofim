@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\DriverController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ResetPasswordController;
 /*
@@ -47,6 +48,10 @@ Route::middleware($middlewareGroup)->group(function () use ($version) {
         Route::post('/cars/review', [CarController::class, 'review']);
         Route::post('/cars/media/add', [CarController::class, 'add_media']);
         Route::post('/cars/media/delete', [CarController::class, 'delete_media']);
+        Route::post('/cars/drivers/delete', [CarController::class, 'delete_driver']);
+
+        Route::resource('drivers', DriverController::class);
+        Route::post('/drivers/update', [DriverController::class, 'update']);
     });
 });
 
