@@ -28,3 +28,8 @@ Route::get('/alreadymailValidate', function () {
 
 Route::get('/verify-email', [VerificationController::class, 'verifyEmail'])->name('verification.verify');
 
+Route::get('/cinet-notify', [PaymentController::class, 'notify']);
+Route::get('/cinet-return', [PaymentController::class, 'return']);
+Route::get('/cinet-cancel', [PaymentController::class, 'cancel']);
+
+

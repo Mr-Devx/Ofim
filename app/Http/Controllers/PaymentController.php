@@ -11,7 +11,10 @@ class PaymentController extends CinetpayPaymentController
    public function cancel(Request $request)
     {
         // redirect the user where you want
-        // return redirect('/'); // or redirect()->home();
+        return response()->json([
+            'success' => false,
+            'message' => "annulation"
+        ]);
     }
 
     public function return(Request $request, Cinetpay $cinetpay)
@@ -28,9 +31,15 @@ class PaymentController extends CinetpayPaymentController
 
 
         if ($cinetpay->isValidPayment()) {
-            // success
+            return response()->json([
+                'success' => false,
+                'message' => "payement effectuer"
+            ]);
         } else {
-            // fail
+            return response()->json([
+                'success' => false,
+                'message' => "payement non effectuer"
+            ]);
         }
 
         // redirect the user where you want
@@ -51,9 +60,15 @@ class PaymentController extends CinetpayPaymentController
 
 
         if ($cinetpay->isValidPayment()){
-            // success
+            return response()->json([
+                'success' => false,
+                'message' => "payement effectuer"
+            ]);
         }else {
-            // fail
+            return response()->json([
+                'success' => false,
+                'message' => "payement non effectuer"
+            ]);
         }
 
         // redirect the user where you want
