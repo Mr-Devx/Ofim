@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreDriverRequest extends FormRequest
@@ -11,7 +13,7 @@ class StoreDriverRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,20 @@ class StoreDriverRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'fullname'            => ['required', 'string'],
+            'phone'               => ['required', 'string'],
+            'license_number'      => ['required', 'string'],
+            'license_expire_date' => ['required', 'date'],
+            'license_file' =>  ['required','mimes:jpg,jpeg,png,doc,docx,ppt,pptx,pdf']
         ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success'   => false,
+            'message' => __('messages.validation_message'),
+            'errors'      => $validator->errors()
+        ]));
     }
 }

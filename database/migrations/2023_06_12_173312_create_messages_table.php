@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('curent_tenant_id')->nullable()->constrained('curent_tenants')->comment("La reservation associé a la discussion");
             $table->text('message')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

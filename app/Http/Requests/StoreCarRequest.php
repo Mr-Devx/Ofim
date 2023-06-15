@@ -46,7 +46,7 @@ class StoreCarRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'success'   => false,
-            'message' => __('auth.validation_message'),
+            'message' => __('messages.validation_message'),
             'errors'      => $validator->errors()
         ]));
     }

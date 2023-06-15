@@ -17,7 +17,11 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('profil')->nullable();
             $table->string('license_number')->nullable();
-            $table->string('license_expire_date')->nullable();
+            $table->string('license_path')->nullable();
+            $table->date('license_expire_date')->nullable();
+            $table->integer('note')->nullable();
+
+            $table->foreignId('owner_id')->nullable()->constrained('users')->comment("Propriétaire du chauffeur");
             $table->boolean('is_active')->default(false)->comment("Etat du chauffeur");
             $table->timestamps();
             $table->softDeletes();

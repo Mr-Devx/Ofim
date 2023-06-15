@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Driver extends Model
+class CarDriver extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -16,7 +16,6 @@ class Driver extends Model
      * @var array
      */
     protected $guarded = [];
-    protected $appends = ['created_date', 'license_expire_at'];
 
     /**
      * The attributes that should be mutated to dates.
@@ -24,14 +23,4 @@ class Driver extends Model
      * @var array
      */
     protected $dates = ['deleted_at'];
-    
-    public function getCreatedDateAttribute()
-    {
-        return date_diff_for_humans($this->created_at);
-    }
-    
-    public function getLicenseExpireAtAttribute()
-    {
-        return format_date($this->license_expire_date);
-    }
 }
