@@ -1,15 +1,16 @@
 <?php
 
 use App\Http\Controllers\CarController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\DriverController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ResetPasswordController;
-use App\Http\Controllers\CurentTenantController;
-use App\Http\Controllers\MessageController;
+use App\Http\Controllers\CityController;
+use App\Http\Controllers\CountryController;
+use App\Http\Controllers\AlertController;
+
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -43,32 +44,19 @@ Route::middleware($middlewareGroup)->group(function () use ($version) {
         Route::put('/update-profile/{id}', [AuthController::class, 'update']);
         Route::delete('/delete-profile/{id}', [AuthController::class, 'delete']);
         Route::put('/change-password/{id}', [AuthController::class, 'changePassword']);
-        
-        Route::post('/reserve-cars', [CurentTenantController::class, 'store']);
-        Route::put('/update-reservation/{id}', [CurentTenantController::class, 'update']);
-        Route::put('/note-reservation/{id}', [CurentTenantController::class, 'note']);
-        Route::put('/extend-reservation/{id}', [CurentTenantController::class, 'extend']);
-        Route::get('/cancel-reservation/{id}', [CurentTenantController::class, 'cancel']);
-        Route::get('/valid-reservation/{id}', [CurentTenantController::class, 'valid']);
-        Route::post('/comment-reservation', [MessageController::class, 'comment']);
-        Route::put('/update-reservation/{id}', [MessageController::class, 'updatecomment']);
-        Route::delete('/remove-reservation/{id}', [MessageController::class, 'deletecomment']);
-        Route::post('/verifypayement-reservation', [CurentTenantController::class, 'verifypayement']);
+
+        Route::get('countries', [CountryController::class, 'index']);
+        Route::get('cities', [CityController::class, 'index']);
+        Route::get('cities/{id}', [CityController::class, 'citiesCountry']);
+
 
         
-        Route::get('/reservations', [CurentTenantController::class, 'index']);
-        Route::get('/reservations/{id}', [CurentTenantController::class, 'show']);
 
-        Route::resource('cars', CarController::class);
-        Route::post('/cars/update', [CarController::class, 'update']);
-        Route::post('/cars/publish', [CarController::class, 'publish']);
-        Route::post('/cars/review', [CarController::class, 'review']);
-        Route::post('/cars/media/add', [CarController::class, 'add_media']);
-        Route::post('/cars/media/delete', [CarController::class, 'delete_media']);
-        Route::post('/cars/drivers/delete', [CarController::class, 'delete_driver']);
-
-        Route::resource('drivers', DriverController::class);
-        Route::post('/drivers/update', [DriverController::class, 'update']);
+        Route::post('/alerts', [AlertController::class, 'store']);
+        Route::get('/alerts', [AlertController::class, 'index']);
+        Route::get('/alerts/{id}', [AlertController::class, 'show']);
+        Route::put('/alerts/{id}', [AlertController::class, 'update']);
+        Route::delete('/alerts/{id}', [AlertController::class, 'destroy']);
     });
 });
 

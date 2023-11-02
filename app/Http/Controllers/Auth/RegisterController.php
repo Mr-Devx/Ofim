@@ -21,12 +21,14 @@ class RegisterController extends Controller
         $v = Validator::make($request->all(), [
             'firstname' => 'nullable',
             'lastname' => 'nullable',
-            'username' => 'required',
+            'username' => 'required|unique:users',
             'phone' => 'required',
-            'email' => 'required',
+            'email' => 'required|email|unique:users',
             'address' => 'nullable',
             'profil' => 'nullable',
             'password' => 'required',
+            'country_id' => 'required',
+            'city_id' => 'required',
         ]);
 
         if ($v->fails()) {
@@ -44,7 +46,9 @@ class RegisterController extends Controller
         $User->phone =  $request->phone;
         $User->profil = $request->profil;
         $User->password =  bcrypt($request->password);
-        $User->role_id = 5;
+        $User->role_id = 2;
+        $User->country_id =  $request->country_id;
+        $User->city_id =  $request->city_id;
         $User->save();
         $User->sendEmailVerificationNotification();
         return response()->json(new UserResource($User), 201);

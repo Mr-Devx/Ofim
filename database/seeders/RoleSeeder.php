@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -18,16 +18,7 @@ class RoleSeeder extends Seeder
                 'name'  => "Admin"
             ],
             [
-                'name'  => "Editeur"
-            ],
-            [
-                'name'  => "Lecteur"
-            ],
-            [
-                'name'  => "Professionnel"
-            ],
-            [
-                'name'  => "Utilisateur"
+                'name'  => "Client"
             ],
         ];
 

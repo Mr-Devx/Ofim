@@ -16,29 +16,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             RoleSeeder::class,
-            PermissionSeeder::class,
-
-            /**Sync des permission au role */
-            SynAdminPermission::class,
-            SynEditeurPermission::class,
-            SynLecteurPermission::class,
-            SynProfessionnelPermission::class,
-            SynUtilisateurPermission::class,
-
-            /** entité parametre */
-            CategoryCarSeeder::class,
-            MarkCarSeeder::class,
-            PlateformPayementSeeder::class,
-            StateCarSeeder::class,
-            TypeCarSeeder::class,
-
-            /** data */
             UserSeeder::class,
-            CarSeeder::class,
-            DriverSeeder::class,
-
-            // params system
-            ParametersSeeder::class,
+            CountriesTableSeeder::class,
         ]);
     }
 }

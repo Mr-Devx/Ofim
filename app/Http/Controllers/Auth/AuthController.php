@@ -52,6 +52,54 @@ class AuthController extends Controller
         }
 
         // Enregistrer le code de vérification dans la base de données
+        // $verificationCode = new VerificationCode([
+        //     'code' => $code,
+        //     'expires_at' => $expiresAt,
+        //     'token' => $tokenUnique,
+        // ]);
+        $token = $user->createToken('two-factor')->plainTextToken;
+
+
+        // $user->verificationCode()->save($verificationCode);
+        // Mail::to($user->email)->send(new VerificationCodeMail($code));
+
+        return response()->json(['user' => $user, 'token' => $token]);
+    }
+
+    public function loginWithCode(Request $request)
+    {
+
+        $args = [];
+        $args['error'] = false;
+
+        $v = Validator::make($request->all(), [
+            'username' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        if ($v->fails()) {
+            $args['error'] = true;
+            $args['validator'] = $v->errors();
+            return response()->json($v->errors(), 400);
+        }
+
+        $code = mt_rand(100000, 999999); // Générer un code aléatoire à 6 chiffres
+        $expiresAt = now()->addMinutes(15); // Définir une expiration pour le code (15 minutes dans cet exemple)
+        $tokenUnique = Str::random(40); // generer un token unique
+        // dd($tokenUnique);
+        $user = User::where('username', $request->username)
+            ->orWhere('email', $request->username)
+            ->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur ou mot de passe incorect'], 404);
+        }
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Utilisateur ou mot de passe incorect'], 401);
+        }
+
+        // Enregistrer le code de vérification dans la base de données
         $verificationCode = new VerificationCode([
             'code' => $code,
             'expires_at' => $expiresAt,

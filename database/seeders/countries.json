@@ -1,0 +1,42 @@
+[
+    {
+      "country_name": "Algérie",
+      "cities": [
+        "Alger",
+        "Oran",
+        "Constantine"
+      ]
+    },
+    {
+      "country_name": "Maroc",
+      "cities": [
+        "Casablanca",
+        "Marrakech",
+        "Fès"
+      ]
+    },
+    {
+      "country_name": "Nigeria",
+      "cities": [
+        "Lagos",
+        "Abuja",
+        "Kano"
+      ]
+    },
+    {
+      "country_name": "Égypte",
+      "cities": [
+        "Le Caire",
+        "Alexandrie",
+        "Gizeh"
+      ]
+    },
+    {
+      "country_name": "Afrique du Sud",
+      "cities": [
+        "Johannesburg",
+        "Le Cap",
+        "Pretoria"
+      ]
+    }
+  ]
