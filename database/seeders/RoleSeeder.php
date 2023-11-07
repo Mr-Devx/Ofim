@@ -18,7 +18,19 @@ class RoleSeeder extends Seeder
                 'name'  => "Admin"
             ],
             [
-                'name'  => "Client"
+                'name'  => "Agent"
+            ],
+            [
+                'name'  => "Directeur"
+            ],
+            [
+                'name'  => "ChefSession"
+            ],
+            [
+                'name'  => "ChefDividon"
+            ],
+            [
+                'name'  => "Secretaire"
             ],
         ];
 

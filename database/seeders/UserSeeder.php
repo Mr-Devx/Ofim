@@ -23,16 +23,23 @@ class UserSeeder extends Seeder
                 'password'      => bcrypt('password'),
                 'role_id'       =>1,
                 'is_active'     => true,
+                'id_role' => 1,
+                'id_ChefSection' => 1,
+                'id_ChefDivision' => 1,
+
             ],
             [
                 'firstname'     => "User",
                 'lastname'      => "user",
-                'email'         => "user@gmail.com",
+                'email'         => "awakipilazi@gmail.com",
                 'phone'         => '+22890807060',
                 'username'      => 'user',
                 'password'      => bcrypt('password'),
                 'role_id'       =>2,
                 'is_active'     => true,
+                'id_role' => 2,
+                'id_ChefSection' => 2,
+                'id_ChefDivision' => 2,
             ],
         ];
 

@@ -45,23 +45,50 @@ Route::middleware($middlewareGroup)->group(function () use ($version) {
         Route::delete('/delete-profile/{id}', [AuthController::class, 'delete']);
         Route::put('/change-password/{id}', [AuthController::class, 'changePassword']);
 
-        Route::get('countries', [CountryController::class, 'index']);
-        Route::get('cities', [CityController::class, 'index']);
-        Route::get('cities/{id}', [CityController::class, 'citiesCountry']);
 
-
-        
 
         Route::post('/alerts', [AlertController::class, 'store']);
         Route::get('/alerts', [AlertController::class, 'index']);
         Route::get('/alerts/{id}', [AlertController::class, 'show']);
         Route::put('/alerts/{id}', [AlertController::class, 'update']);
         Route::delete('/alerts/{id}', [AlertController::class, 'destroy']);
+
+        Route::get('/dagle', [DagleController::class, 'index']);
+        Route::get('/dagle/{id}', [DagleController::class, 'show']);
+        Route::post('/dagle', [DagleController::class, 'store']);
+        Route::put('/dagle/{id}', [DagleController::class, 'update']);
+        Route::delete('/dagle/{id}', [DagleController::class, 'destroy']);
+
+
+        Route::get('/user', [UserController::class, 'index']);
+        Route::get('/user/{id}', [UserController::class, 'show']);
+        Route::post('/user', [UserController::class, 'store']);
+        Route::put('/user/{id}', [UserController::class, 'update']);
+        Route::delete('/user/{id}', [UserController::class, 'destroy']);
+
+        Route::get('/direction', [DirectionController::class, 'index']);
+        Route::get('/direction/{id}', [DirectionController::class, 'show']);
+        Route::post('/direction', [DirectionController::class, 'store']);
+        Route::put('/direction/{id}', [UserController::class, 'update']);
+        Route::delete('/direction/{id}', [UserController::class, 'destroy']);
+
+        Route::get('/section', [SectionController::class, 'index']);
+        Route::get('/section/{id}', [SectionController::class, 'show']);
+        Route::post('/section', [SectionController::class, 'store']);
+        Route::put('/section/{id}', [SectionController::class, 'update']);
+        Route::delete('/section/{id}', [SectionController::class, 'destroy']);
+
+        Route::get('/division', [DivisionController::class, 'index']);
+        Route::get('/division/{id}', [DivisionController::class, 'show']);
+        Route::post('/division', [DivisionController::class, 'store']);
+        Route::put('/division/{id}', [DivisionController::class, 'update']);
+        Route::delete('/division/{id}', [DivisionController::class, 'destroy']);
+
     });
 });
 
-Route::post('password/reset', ['as' => 'password.reset','uses' => 'ResetPasswordController@reset']);
-       
+Route::post('password/reset', ['as' => 'password.reset', 'uses' => 'ResetPasswordController@reset']);
+
 
 
 

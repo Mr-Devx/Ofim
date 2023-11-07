@@ -26,6 +26,19 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unsignedBigInteger('id_role'); // Correction ici
+
+            $table->unsignedBigInteger('id_ChefSection');
+            $table->unsignedBigInteger('id_ChefDivision');
+
+            // Définition des clés étrangères
+            $table->foreign('id_role')->references('id')->on('roles');
+            $table->foreign('id_ChefSection')->references('id')->on('sections');
+            $table->foreign('id_ChefDivision')->references('id')->on('divisions');
+
+            /*$table->Unsign('user_id')->nullable()->constrained('users');*/
+
         });
     }
 
