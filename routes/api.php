@@ -1,14 +1,16 @@
 <?php
 
-use App\Http\Controllers\CarController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ResetPasswordController;
-use App\Http\Controllers\CityController;
-use App\Http\Controllers\CountryController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\DivisionController;
+use App\Http\Controllers\DirectionController;
+use App\Http\Controllers\SectionController;
 use App\Http\Controllers\AlertController;
+
 
 
 /*

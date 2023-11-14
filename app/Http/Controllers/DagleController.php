@@ -2,84 +2,148 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Dagle;
+use Illuminate\Http\Request;
+use App\Http\Resources\DagleResource;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class DagleController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the Dagles.
+     *
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $dagles = Dagle::all();
-        return view('dagles.index', compact('dagles'));
+        return DagleResource::collection(
+            Dagle::orderBy('created_at', 'DESC')->get()
+        );
     }
 
-    public function create()
-    {
-        return view('dagles.create');
-    }
-
-    public function store(Request $request)
-    {
-        // Validez les données du formulaire
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'secretariat' => 'required|string|max:255',
-        ]);
-
-        // Créez une nouvelle instance de Dagle avec les données validées
-        $dagle = new Dagle($validatedData);
-        $dagle->save();
-
-        return redirect()->route('dagles.index')->with('success', 'Dagle créé avec succès.');
-    }
-
+    /**
+     * Display the specified Dagle.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function show($id)
     {
-        $dagle = Dagle::findOrFail($id); // Recherche l'enregistrement Dagle par son ID
+        $args = [];
+        $args['error'] = false;
 
-        return view('dagles.show', ['dagle' => $dagle]);
+        $data = Dagle::find($id);
+        if (is_null($data)) {
+            $args['error'] = true;
+            $args['message'] = 'Resource not found';
+            return response()->json($args, 404);
+        }
+
+        return response()->json(new DagleResource($data), 200);
     }
 
+    /**
+     * Store a newly created Dagle in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $args = [];
+        $args['error'] = false;
 
+        $v = Validator::make($request->all(), [
+            'label' => 'required',
+            'desc' => 'required|unique:categories,desc',
+        ]);
+
+        if ($v->fails()) {
+            $args['error'] = true;
+            $args['validator'] = $v->errors();
+            return response()->json($v->errors(), 400);
+        }
+
+        DB::beginTransaction();
+        $data = new Dagle();
+        $data->name = $request->name;
+        $data->secretariat = $request->secretariat;
+        $data->dagle_id = $request->dagle_id;
+        $data->save();
+
+        DB::commit();
+        return response()->json(new DagleResource($data), 201);
+    }
+
+    /**
+     * Update the specified Dagle in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $args = [];
+        $args['error'] = false;
+
+        $v = Validator::make($request->all(), [
+            'label' => 'required',
+            'desc' => 'required|unique:categories,desc',
+        ]);
+
+        if ($v->fails()) {
+            $args['error'] = true;
+            $args['validator'] = $v->errors();
+            return response()->json($v->errors(), 400);
+        }
+
+        $data = Dagle::find($id);
+        $all = $request->all();
+
+        if (is_null($data)) {
+            $args['error'] = true;
+            $args['message'] = 'Resource not found';
+            return response()->json($args, 404);
+        } else {
+            $data->update($all);
+            return response()->json(new DagleResource($data), 200);
+        }
+    }
+    /**
+     * Show the form for editing the specified Dagle.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function edit($id)
     {
-        $dagle = Dagle::findOrFail($id); // Recherche l'enregistrement Dagle par son ID
-
-        return view('dagles.edit', ['dagle' => $dagle]);
+        // ...
     }
-
-
-    public function update(Request $request, $id)
-{
-    // Validez les données du formulaire
-    $validatedData = $request->validate([
-        'name' => 'required|string|max:255',
-        'secretariat' => 'required|string|max:255',
-    ]);
-
-    $dagle = Dagle::findOrFail($id); // Recherche l'enregistrement Dagle par son ID
-
-    // Mettez à jour les attributs de l'enregistrement avec les données validées
-    $dagle->name = $validatedData['name'];
-    $dagle->secretariat = $validatedData['secretariat'];
-    $dagle->save();
-
-    // Redirigez l'utilisateur vers la page de liste des dagles ou toute autre page souhaitée
-    return redirect()->route('dagles.index')->with('success', 'Dagle mis à jour avec succès.');
-}
-
-
+    /**
+     * Remove the specified Dagle from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function destroy($id)
     {
-        $dagle = Dagle::findOrFail($id); // Recherche l'enregistrement Dagle par son ID
+        $args = array();
+        $args['error'] = false;
 
-        // Supprimez l'enregistrement de la base de données
-        $dagle->delete();
-
-        // Redirigez l'utilisateur vers la page de liste des dagles ou toute autre page souhaitée
-        return redirect()->route('dagles.index')->with('success', 'Dagle supprimé avec succès.');
+        $data = Dagle::find($id);
+        if (is_null($data)) {
+            $args['error'] = true;
+            $args['message'] = 'Resource not found';
+            return response()->json($args, 404);
+        } else {
+            // $data->delete();
+            $up = DB::table('Dagles')
+                ->where('id', '=', $id)
+                ->update(['archive' => 1]);
+            return response()->json(new DagleResource($data), 200);
+        }
     }
+
 }

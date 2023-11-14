@@ -2,80 +2,82 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Role;
-use App\Models\Section;
-use App\Models\Division;
+use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all();
-        return view('users.index', compact('users'));
-    }
-
-    public function create()
-    {
-        $roles = Role::all();
-        $sections = Section::all();
-        $divisions = Division::all();
-        return view('users.create', compact('roles', 'sections', 'divisions'));
+        return UserResource::collection(
+            User::orderBy('created_at', 'DESC')->get()
+        );
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $args = [];
+        $args['error'] = false;
+
+        $v = Validator::make($request->all(), [
             'firstname' => 'required|string',
             'lastname' => 'required|string',
             'username' => 'required|string',
             'phone' => 'nullable|string',
-            'email' => 'required|string|email|unique:users',
+            'email' => 'required|string|email|unique:users,email,',
             'address' => 'nullable|string',
             'profil' => 'nullable|string',
-            'password' => 'required|string',
             'role_id' => 'required|exists:roles,id',
             'id_ChefSection' => 'nullable|exists:sections,id',
             'id_ChefDivision' => 'nullable|exists:divisions,id',
         ]);
 
-        $user = new User;
-        $user->firstname = $request->input('firstname');
-        $user->lastname = $request->input('lastname');
-        $user->username = $request->input('username');
-        $user->phone = $request->input('phone');
-        $user->email = $request->input('email');
-        $user->address = $request->input('address');
-        $user->profil = $request->input('profil');
-        $user->password = bcrypt($request->input('password'));
-        $user->role_id = $request->input('role_id');
-        $user->id_ChefSection = $request->input('id_ChefSection');
-        $user->id_ChefDivision = $request->input('id_ChefDivision');
-        $user->save();
+        if ($v->fails()) {
+            $args['error'] = true;
+            $args['validator'] = $v->errors();
+            return response()->json($v->errors(), 400);
+        }
 
-        return redirect()->route('user.index')
-            ->with('success', 'Utilisateur créé avec succès.');
+        DB::beginTransaction();
+        $data = new User();
+        $data->name = $request->name;
+        $data->email = $request->email;
+        // Set other fields as needed
+        $data->save();
+
+        DB::commit();
+        return response()->json(new UserResource($data), 201);
     }
 
     public function show($id)
     {
-        $user = User::findOrFail($id);
-        return view('users.show', compact('user'));
+        $args = [];
+        $args['error'] = false;
+
+        $data = User::find($id);
+        if (is_null($data)) {
+            $args['error'] = true;
+            $args['message'] = 'Resource not found';
+            return response()->json($args, 404);
+        }
+
+        return response()->json(new UserResource($data), 200);
     }
 
     public function edit($id)
     {
-        $user = User::findOrFail($id);
-        $roles = Role::all();
-        $sections = Section::all();
-        $divisions = Division::all();
-        return view('users.edit', compact('user', 'roles', 'sections', 'divisions'));
+        // Implement if needed
     }
 
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $args = [];
+        $args['error'] = false;
+
+        $v = Validator::make($request->all(), [
             'firstname' => 'required|string',
             'lastname' => 'required|string',
             'username' => 'required|string',
@@ -88,32 +90,36 @@ class UserController extends Controller
             'id_ChefDivision' => 'nullable|exists:divisions,id',
         ]);
 
-        $user = User::findOrFail($id);
-        $user->firstname = $request->input('firstname');
-        $user->lastname = $request->input('lastname');
-        $user->username = $request->input('username');
-        $user->phone = $request->input('phone');
-        $user->email = $request->input('email');
-        $user->address = $request->input('address');
-        $user->profil = $request->input('profil');
-        if ($request->has('password')) {
-            $user->password = bcrypt($request->input('password'));
+        if ($v->fails()) {
+            $args['error'] = true;
+            $args['validator'] = $v->errors();
+            return response()->json($v->errors(), 400);
         }
-        $user->role_id = $request->input('role_id');
-        $user->id_ChefSection = $request->input('id_ChefSection');
-        $user->id_ChefDivision = $request->input('id_ChefDivision');
-        $user->save();
 
-        return redirect()->route('user.index')
-            ->with('success', 'Utilisateur mis à jour avec succès.');
+        $data = User::find($id);
+        if (is_null($data)) {
+            $args['error'] = true;
+            $args['message'] = 'Resource not found';
+            return response()->json($args, 404);
+        } else {
+            $data->update($request->all());
+            return response()->json(new UserResource($data), 200);
+        }
     }
 
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
+        $args = array();
+        $args['error'] = false;
 
-        return redirect()->route('user.index')
-            ->with('success', 'Utilisateur supprimé avec succès.');
+        $data = User::find($id);
+        if (is_null($data)) {
+            $args['error'] = true;
+            $args['message'] = 'Resource not found';
+            return response()->json($args, 404);
+        } else {
+            $data->delete();
+            return response()->json(new UserResource($data), 200);
+        }
     }
 }

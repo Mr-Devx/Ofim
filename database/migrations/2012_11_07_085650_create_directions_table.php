@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('directions', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->string('secretariat')->nullable();
+            $table->string('name');
+            $table->string('secretariat');
             $table->timestamps();
         });
     }

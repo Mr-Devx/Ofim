@@ -27,10 +27,9 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unsignedBigInteger('id_role'); // Correction ici
-
-            $table->unsignedBigInteger('id_ChefSection');
-            $table->unsignedBigInteger('id_ChefDivision');
+            $table->unsignedBigInteger('id_role')->nullable(); // Correction ici
+            $table->unsignedBigInteger('id_ChefSection')->nullable();
+            $table->unsignedBigInteger('id_ChefDivision')->nullable();
 
             // Définition des clés étrangères
             $table->foreign('id_role')->references('id')->on('roles');
